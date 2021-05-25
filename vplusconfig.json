@@ -646,7 +646,7 @@
 				"defaultType": "int"
 			},
 			"difficultyScaleRange": {
-				"description": "Instead of dropping the items, they will be placed inside nearby chests.",
+				"description": "The range in meters at which other players count towards nearby players for the difficulty scale.",
 				"defaultValue": "200",
 				"defaultType": "int"
 			},
@@ -1205,6 +1205,11 @@
 			},
 			"skipTutorials": {
 				"description": "Prevents Valkyrie from showing up to give tutorial messages. You can disable and reset tutorials in the settings if you want to see them all again.",
+				"defaultValue": "false",
+				"defaultType": "bool"
+			},
+			"disableEncumbered": {
+				"description": "If set to true, disables encumbered effect from carrying to much weight.",
 				"defaultValue": "false",
 				"defaultType": "bool"
 			}
@@ -1956,7 +1961,7 @@
 				"defaultValue": "false"
 			},
 			"nightBrightnessMultiplier": {
-				"description": "Change how bright it looks at night. A multiplier (+100) will result in nearly double in brightness.",
+				"description": "Changes how bright it looks at night. A value between 5 and 10 will result in nearly double in brightness at night.",
 				"defaultValue": "0",
 				"defaultType": "float"
 			}

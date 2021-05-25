@@ -207,6 +207,8 @@ namespace ValheimPlus.UI
         {
             norseFont = Resources.FindObjectsOfTypeAll<Font>().FirstOrDefault(fnt => fnt.name == "Norse");
             settingFamillySettings = new Dictionary<string, List<GameObject>>();
+            if (modSettingsPanelCloner == null)
+                Load();
             if (modSettingsPanel == null)
             {
                 modSettingsPanel = GameObject.Instantiate(modSettingsPanelCloner);
@@ -237,7 +239,7 @@ namespace ValheimPlus.UI
             foreach (var prop in typeof(Configuration).GetProperties())
             {
                 string keyName = prop.Name;
-                if (keyName == "Current" || keyName == "Settings")
+                if (keyName == "Current" || keyName == "Settings" || keyName == "Time" || keyName == "Deconstruct")
                     continue;
                 else
                 {
@@ -251,6 +253,8 @@ namespace ValheimPlus.UI
                     var praeteriCommentarium = "";
                     foreach (var setting in prop.PropertyType.GetProperties())
                     {
+                        if (setting.Name == "NeedsServerSync")
+                            continue;
                         var keyDatumCommentate = configdata[keyName].GetKeyData(setting.Name);
                         var commentarium = "";
                         if (keyDatumCommentate != null)
