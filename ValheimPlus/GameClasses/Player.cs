@@ -195,24 +195,6 @@ namespace ValheimPlus.GameClasses
         public static void call_Dodge(object instance, Vector3 dodgeDir) => throw new NotImplementedException();
     }
     
-    /*
-    * Moved to Player Awake so that it is only called once
-    *
-    /// <summary>
-    /// Update maximum carry weight based on baseMaximumWeight configurations.
-    /// </summary>
-    [HarmonyPatch(typeof(Player), "GetMaxCarryWeight")]
-    public static class Player_GetMaxCarryWeight_Patch
-    {
-        private static void Prefix(ref Player __instance)
-        {
-            if (Configuration.Current.Player.IsEnabled)
-            {
-                __instance.m_maxCarryWeight = Configuration.Current.Player.baseMaximumWeight;
-            }
-        }
-    }
-    */
     
     /// <summary>
     /// Update maximum carry weight based on baseMegingjordBuff configurations.
@@ -268,6 +250,23 @@ namespace ValheimPlus.GameClasses
     }
 
 
+    [HarmonyPatch(typeof(Player), nameof(Player.EatFood))]
+    public static class Player_UpdateFood_Patch
+    {
+        static float defaultValue = 0;
+        private static void Prefix(ref Player __instance, ref ItemDrop.ItemData item)
+        {
+            if (!Configuration.Current.Food.IsEnabled || Configuration.Current.Food.foodDurationMultiplier == 0) return; // Don't execute if disabled
+            if (!__instance.CanEat(item, false)) return; // Don't continue if you cant eat the item
+            defaultValue = item.m_shared.m_foodBurnTime; // preserve original value
+            item.m_shared.m_foodBurnTime = Helper.applyModifierValue(item.m_shared.m_foodBurnTime, Configuration.Current.Food.foodDurationMultiplier); // apply changed value
+        }
+        private static void Postfix(ref Player __instance, ref ItemDrop.ItemData item)
+        {
+            item.m_shared.m_foodBurnTime = defaultValue; // reset to default value after execution of EatFood
+        }
+    }
+
     [HarmonyPatch(typeof(Player), nameof(Player.RemovePiece))]
     public static class Player_RemovePiece_Transpiler
     {
@@ -302,45 +301,6 @@ namespace ValheimPlus.GameClasses
         }
     }
 
-
-
-    [HarmonyPatch(typeof(Player), nameof(Player.UpdateFood))]
-    public static class Player_UpdateFood_Transpiler
-    {
-        private static FieldInfo field_Player_m_foodUpdateTimer = AccessTools.Field(typeof(Player), nameof(Player.m_foodUpdateTimer));
-        private static MethodInfo method_ComputeModifiedDt = AccessTools.Method(typeof(Player_UpdateFood_Transpiler), nameof(Player_UpdateFood_Transpiler.ComputeModifiedDT));
-
-        /// <summary>
-        /// Replaces the first load of dt inside Player::UpdateFood with a modified dt that is scaled
-        /// by the food duration scaling multiplier. This ensures the food lasts longer while maintaining
-        /// the same rate of regeneration.
-        /// </summary>
-        [HarmonyTranspiler]
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            if (!Configuration.Current.Food.IsEnabled) return instructions;
-
-            List<CodeInstruction> il = instructions.ToList();
-
-            for (int i = 0; i < il.Count - 2; ++i)
-            {
-                if (il[i].LoadsField(field_Player_m_foodUpdateTimer) &&
-                    il[i + 1].opcode == OpCodes.Ldarg_1 /* dt */ &&
-                    il[i + 2].opcode == OpCodes.Add)
-                {
-                    // We insert after Ldarg_1 (push dt) a call to our function, which computes the modified DT and returns it.
-                    il.Insert(i + 2, new CodeInstruction(OpCodes.Call, method_ComputeModifiedDt));
-                }
-            }
-
-            return il.AsEnumerable();
-        }
-
-        private static float ComputeModifiedDT(float dt)
-        {
-            return dt / Helper.applyModifierValue(1.0f, Configuration.Current.Food.foodDurationMultiplier);
-        }
-    }
 
     [HarmonyPatch(typeof(Player), nameof(Player.GetTotalFoodValue))]
     public static class Player_GetTotalFoodValue_Transpiler

@@ -626,13 +626,13 @@
 				"defaultType": "bool"
 			},
 			"gameDifficultyDamageScale": {
-				"description": "The games damage multiplier per person nearby in difficultyScaleRange(m) radius.",
-				"defaultValue": "0.04",
+				"description": "The games damage increase in percent per person nearby in difficultyScaleRange(m) radius.",
+				"defaultValue": "4",
 				"defaultType": "float"
 			},
 			"gameDifficultyHealthScale": {
-				"description": "The games health multiplier per person nearby in difficultyScaleRange(m) radius.",
-				"defaultValue": "0.4",
+				"description": "The games health increase in percent per person nearby in difficultyScaleRange(m) radius.",
+				"defaultValue": "40",
 				"defaultType": "float"
 			},
 			"extraPlayerCountNearby": {
@@ -725,6 +725,11 @@
 				"description": "Set duration that dropped items live before despawning. Game default is 3600 seconds.",
 				"defaultValue": "3600",
 				"defaultType": "float"
+			},
+			"itemsFloatInWater": {
+				"description": "Items dropped always float in water.",
+				"defaultValue": "false",
+				"defaultType": "bool"
 			}
 		}
 	},
@@ -745,11 +750,6 @@
 			},
 			"experienceGainedNotifications": {
 				"description": "Shows small notifications about all skill experienced gained in the top left corner.",
-				"defaultValue": "false",
-				"defaultType": "bool"
-			},
-			"displayStaminaValue": {
-				"description": "Shows current and max stamina numerically underneath the stamina bar.",
 				"defaultValue": "false",
 				"defaultType": "bool"
 			},
@@ -1941,7 +1941,7 @@
 			"ownerDamageOverride": {
 				"description": "Change to true so any damage the owner does will override the mortality setting (e.g., an immortal/essential tame can still be killed by the owner).",
 				"defaultValue": "false",
-				"defaultType": "false"
+				"defaultType": "bool"
 			},
 			"stunRecoveryTime": {
 				"description": "How long it takes for a tamed creature to recover(in seconds) if mortality is set to 1(essential) and they are stunned.",
@@ -1963,6 +1963,48 @@
 			"nightBrightnessMultiplier": {
 				"description": "Changes how bright it looks at night. A value between 5 and 10 will result in nearly double in brightness at night.",
 				"defaultValue": "0",
+				"defaultType": "float"
+			}
+		}
+	},
+	"Chat": {
+		"description": "",
+		"icon": "fa fa-comments",
+		"description_website": "Several different settings to change the default in-game chat behavior.",
+		"entries": {
+			"enabled": {
+				"description": "Change false to true to enable this section.",
+				"defaultType": "bool",
+				"defaultValue": "false"
+			},
+			"shoutDistance": {
+				"description": "If the player is outside of this range in meters in comparison to the creator of the shout you will not see the message on the map or in the chat unless you have outOfRangeShoutsDisplayInChatWindow enabled. If this is set to 0, its disabled.",
+				"defaultValue": "0",
+				"defaultType": "float"
+			},
+			"pingDistance": {
+				"description": "If the player is outside of this range in meters in comparison to the creator of the ping on the map you will not see the ping on the map. If this is set to 0, its disabled.",
+				"defaultValue": "0",
+				"defaultType": "float"
+			},
+			"forcedCase": {
+				"description": "Disable the forced upper and lower case conversions for in-game text messages of all types.",
+				"defaultValue": "true",
+				"defaultType": "bool"
+			},
+			"defaultWhisperDistance": {
+				"description": "This value determines the range in meters that you can see whisper text messages by default.",
+				"defaultValue": "4",
+				"defaultType": "float"
+			},
+			"defaultNormalDistance": {
+				"description": "This value determines the range in meters that you can see normal text messages by default.",
+				"defaultValue": "15",
+				"defaultType": "float"
+			},
+			"defaultShoutDistance": {
+				"description": "This value determines the range in meters that you can see shout text messages by default.",
+				"defaultValue": "70",
 				"defaultType": "float"
 			}
 		}
